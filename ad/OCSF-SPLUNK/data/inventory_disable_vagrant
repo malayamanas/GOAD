@@ -1,0 +1,24 @@
+[default]
+; This inventory file is for disabling the vagrant user after initial setup
+; For OCSF-SPLUNK lab, this is optional as we're using standalone systems
+
+; Windows host (if vagrant user needs to be disabled)
+ws-win ansible_host={{ip_range}}.34 dns_domain=ocsf dict_key=ws-win ansible_user=vagrant ansible_password=vagrant
+
+; Linux hosts (vagrant user typically remains active on Linux)
+splunk-idx ansible_host={{ip_range}}.32 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+splunk-hf ansible_host={{ip_range}}.33 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+ws-linux ansible_host={{ip_range}}.35 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+kali ansible_host={{ip_range}}.36 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+
+[all:vars]
+; domain_name : folder inside ad/
+domain_name=OCSF-SPLUNK
+
+; winrm connection (windows)
+ansible_user=vagrant
+ansible_password=vagrant
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_operation_timeout_sec=400
+ansible_winrm_read_timeout_sec=500

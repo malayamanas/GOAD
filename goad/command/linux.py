@@ -33,16 +33,37 @@ class LinuxCommand(Command):
         return self.is_in_path('vmrun')
 
     def check_vmware_utility(self):
-        try:
-            result = subprocess.run(
-                ['systemctl', 'is-active', '--quiet', 'vagrant-vmware-utility'],
-                check=True
-            )
-            Log.success(f'vmware utility is installed')
-            return True
-        except subprocess.CalledProcessError:
-            Log.error("vagrant-vmware-utility is not installed")
-            return False
+        # Check if running on macOS (Darwin)
+        import platform
+        if platform.system() == 'Darwin':
+            # On macOS, check if vagrant-vmware-utility process is running
+            try:
+                result = subprocess.run(
+                    ['pgrep', '-f', 'vagrant-vmware-utility'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                if result.returncode == 0:
+                    Log.success(f'vmware utility is running')
+                    return True
+                else:
+                    Log.warning("vagrant-vmware-utility is not running (this is optional on macOS)")
+                    return True  # Return True to allow continuing without it
+            except FileNotFoundError:
+                Log.warning("Cannot check vagrant-vmware-utility status on macOS")
+                return True  # Return True to allow continuing
+        else:
+            # Original Linux systemctl check
+            try:
+                result = subprocess.run(
+                    ['systemctl', 'is-active', '--quiet', 'vagrant-vmware-utility'],
+                    check=True
+                )
+                Log.success(f'vmware utility is installed')
+                return True
+            except subprocess.CalledProcessError:
+                Log.error("vagrant-vmware-utility is not installed")
+                return False
 
     def check_ovftool(self):
         try:

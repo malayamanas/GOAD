@@ -91,16 +91,39 @@ This lab is ideal for:
 
 ## Installation
 
+<<<<<<< HEAD
 ```bash
 # Using VirtualBox
 ./goad.sh -t install -l OCSF-SPLUNK -p virtualbox
 
 # Using VMware
+**For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md)**
+
+### Quick Start
+
+```bash
+# Check prerequisites
+./goad.sh -t check -l OCSF-SPLUNK -p virtualbox
+
+# Install the lab
+./goad.sh -t install -l OCSF-SPLUNK -p virtualbox
+
+# OR with VMware
 ./goad.sh -t install -l OCSF-SPLUNK -p vmware
 
 # With custom IP range
 ./goad.sh -t install -l OCSF-SPLUNK -p virtualbox -ip 192.168.100
 ```
+
+### Prerequisites
+
+- **Vagrant** 2.0+ with plugins: vagrant-reload, winrm, winrm-fs, winrm-elevated
+- **VirtualBox** 6.0+ OR **VMware Fusion/Workstation**
+- **Ansible** 2.12+ (installed via GOAD)
+- **Python** 3.8+ (3.11+ recommended)
+- **Disk Space**: 120-150 GB free
+- **RAM**: 13 GB minimum (16 GB+ recommended)
+- **CPU**: 8+ vCPUs
 
 ## Notes
 
