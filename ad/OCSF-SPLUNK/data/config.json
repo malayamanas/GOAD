@@ -1,0 +1,50 @@
+{
+"lab" : {
+    "hosts" : {
+        "ws-win": {
+            "hostname": "ws-win",
+            "type": "workstation",
+            "local_admin_password": "WinWork@2024!",
+            "domain": "ocsf.lab",
+            "use_laps": false,
+            "path": "DC=ocsf,DC=lab",
+            "local_groups": {
+                "Administrators": [
+                    "OCSF\\admin"
+                ],
+                "Remote Desktop users": [
+                    "OCSF\\user"
+                ]
+            },
+            "vulns": ["disable_firewall"]
+        }
+    },
+    "linux_hosts": {
+        "splunk-idx": {
+            "hostname": "splunk-idx",
+            "type": "splunk_server",
+            "os": "ubuntu",
+            "ip_suffix": "32"
+        },
+        "splunk-hf": {
+            "hostname": "splunk-hf",
+            "type": "splunk_forwarder",
+            "os": "ubuntu",
+            "ip_suffix": "33"
+        },
+        "ws-linux": {
+            "hostname": "ws-linux",
+            "type": "linux_workstation",
+            "os": "ubuntu",
+            "ip_suffix": "35"
+        },
+        "kali": {
+            "hostname": "kali",
+            "type": "security_tools",
+            "os": "kali",
+            "ip_suffix": "36"
+        }
+    },
+    "domains": {}
+}
+}

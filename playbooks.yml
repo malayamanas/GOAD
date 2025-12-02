@@ -56,6 +56,10 @@ GOAD-Mini:
   - security.yml
   - vulnerabilities.yml
 
+OCSF-SPLUNK:
+  - build.yml
+  - security.yml
+
 default:
   - build.yml
   - ad-servers.yml

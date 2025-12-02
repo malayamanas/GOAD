@@ -1,0 +1,9 @@
+[default]
+; Windows host
+ws-win ansible_host={{ip_range}}.34 dns_domain=ocsf dict_key=ws-win
+
+; Linux hosts use SSH connection
+splunk-idx ansible_host={{ip_range}}.32 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+splunk-hf ansible_host={{ip_range}}.33 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+ws-linux ansible_host={{ip_range}}.35 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
+kali ansible_host={{ip_range}}.36 ansible_connection=ssh ansible_user=vagrant ansible_password=vagrant ansible_become_password=vagrant
