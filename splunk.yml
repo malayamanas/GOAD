@@ -1,0 +1,84 @@
+---
+# Splunk Configuration Variables
+# This file contains all Splunk-related configuration for the OCSF-SPLUNK lab
+
+# Splunk versions
+splunk_version: "9.3.2"
+splunk_build: "d8bb32809498"
+
+# Splunk download URLs (will be constructed from version and build)
+splunk_enterprise_filename: "splunk-{{ splunk_version }}-{{ splunk_build }}-linux-2.6-amd64.deb"
+splunk_forwarder_filename: "splunkforwarder-{{ splunk_version }}-{{ splunk_build }}-linux-2.6-amd64.deb"
+splunk_forwarder_windows_filename: "splunkforwarder-{{ splunk_version }}-{{ splunk_build }}-x64-release.msi"
+
+# Splunk installation paths
+splunk_home: "/opt/splunk"
+splunk_forwarder_home: "/opt/splunkforwarder"
+splunk_windows_home: "C:\\Program Files\\SplunkUniversalForwarder"
+
+# Splunk user and group (Linux)
+splunk_user: "splunk"
+splunk_group: "splunk"
+
+# Splunk admin credentials
+splunk_admin_username: "admin"
+splunk_admin_password: "changeme"
+
+# Splunk indexer settings
+splunk_indexer_ip: "192.168.56.32"
+splunk_indexer_port: "9997"
+splunk_web_port: "8000"
+splunk_mgmt_port: "8089"
+
+# Splunk Heavy Forwarder settings
+splunk_hf_ip: "192.168.56.33"
+splunk_hf_web_port: "8000"
+splunk_hf_mgmt_port: "8089"
+
+# License (using free license by default)
+splunk_license_path: ""  # Leave empty for free license (500MB/day)
+
+# Splunk indexes to create
+splunk_indexes:
+  - name: "ocsf"
+    homePath: "$SPLUNK_DB/ocsf/db"
+    coldPath: "$SPLUNK_DB/ocsf/colddb"
+    thawedPath: "$SPLUNK_DB/ocsf/thaweddb"
+  - name: "windows"
+    homePath: "$SPLUNK_DB/windows/db"
+    coldPath: "$SPLUNK_DB/windows/colddb"
+    thawedPath: "$SPLUNK_DB/windows/thaweddb"
+  - name: "linux"
+    homePath: "$SPLUNK_DB/linux/db"
+    coldPath: "$SPLUNK_DB/linux/colddb"
+    thawedPath: "$SPLUNK_DB/linux/thaweddb"
+  - name: "security"
+    homePath: "$SPLUNK_DB/security/db"
+    coldPath: "$SPLUNK_DB/security/colddb"
+    thawedPath: "$SPLUNK_DB/security/thaweddb"
+
+# Forwarder inputs (data collection)
+splunk_linux_inputs:
+  - source: "/var/log/syslog"
+    sourcetype: "syslog"
+    index: "linux"
+  - source: "/var/log/auth.log"
+    sourcetype: "linux_secure"
+    index: "security"
+  - source: "/var/log/audit/audit.log"
+    sourcetype: "auditd"
+    index: "security"
+
+splunk_windows_inputs:
+  - name: "Security"
+    index: "security"
+  - name: "System"
+    index: "windows"
+  - name: "Application"
+    index: "windows"
+
+# Enable boot-start
+splunk_enable_boot_start: true
+
+# Accept license automatically
+splunk_accept_license: true

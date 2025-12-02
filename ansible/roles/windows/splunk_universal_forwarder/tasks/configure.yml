@@ -1,0 +1,24 @@
+---
+# Configure Splunk Universal Forwarder (Windows)
+
+- name: Ensure Splunk local directory exists
+  win_file:
+    path: "{{ splunk_windows_home }}\\etc\\system\\local"
+    state: directory
+
+- name: Configure Splunk outputs (forward to Heavy Forwarder)
+  win_template:
+    src: outputs.conf.j2
+    dest: "{{ splunk_windows_home }}\\etc\\system\\local\\outputs.conf"
+
+- name: Configure Splunk inputs (Windows Event Logs)
+  win_template:
+    src: inputs.conf.j2
+    dest: "{{ splunk_windows_home }}\\etc\\system\\local\\inputs.conf"
+  notify: restart splunk
+
+- name: Ensure Splunk service is set to start automatically
+  win_service:
+    name: SplunkForwarder
+    start_mode: auto
+    state: started

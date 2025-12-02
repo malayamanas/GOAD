@@ -1,0 +1,41 @@
+---
+# Install Splunk Universal Forwarder (Windows)
+
+- name: Check if Splunk Universal Forwarder is already installed
+  win_stat:
+    path: "{{ splunk_windows_home }}\\bin\\splunk.exe"
+  register: splunk_uf_windows_installed
+
+- name: Create temporary directory for download
+  win_file:
+    path: C:\temp
+    state: directory
+  when: not splunk_uf_windows_installed.stat.exists
+
+- name: Download Splunk Universal Forwarder MSI
+  win_get_url:
+    url: "https://download.splunk.com/products/universalforwarder/releases/{{ splunk_version }}/windows/{{ splunk_forwarder_windows_filename }}"
+    dest: "C:\\temp\\{{ splunk_forwarder_windows_filename }}"
+    timeout: 300
+  when: not splunk_uf_windows_installed.stat.exists
+  retries: 3
+  delay: 10
+
+- name: Install Splunk Universal Forwarder MSI
+  win_package:
+    path: "C:\\temp\\{{ splunk_forwarder_windows_filename }}"
+    product_id: '{F5110B75-0C93-4185-959D-84DE81D1F4EE}'
+    arguments:
+      - AGREETOLICENSE=Yes
+      - LAUNCHSPLUNK=0
+      - SERVICESTARTTYPE=auto
+      - SPLUNKUSERNAME=admin
+      - SPLUNKPASSWORD={{ splunk_admin_password }}
+    state: present
+  when: not splunk_uf_windows_installed.stat.exists
+  register: splunk_install_result
+
+- name: Clean up downloaded MSI
+  win_file:
+    path: "C:\\temp\\{{ splunk_forwarder_windows_filename }}"
+    state: absent

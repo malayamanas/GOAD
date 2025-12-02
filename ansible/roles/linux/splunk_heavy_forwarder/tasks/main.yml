@@ -1,0 +1,14 @@
+---
+# Splunk Heavy Forwarder Installation and Configuration
+
+- name: Include tasks for installing Splunk Heavy Forwarder
+  include_tasks: install.yml
+  tags: install
+
+- name: Include tasks for configuring Splunk Heavy Forwarder
+  include_tasks: configure.yml
+  tags: configure
+
+- name: Include tasks for starting Splunk
+  include_tasks: start.yml
+  tags: start

@@ -44,6 +44,10 @@ boxes.append(
       target.vm.provider "vmware_desktop" do |v|
         v.vmx["memsize"] = box[:mem]
         v.vmx["numvcpus"] = box[:cpus]
+        if box[:name] == "KALI"
+          # This line injects the required VMX parameter to fix the networking warning/SSH issue.
+          v.vmx["ethernet1.pcislotnumber"] = "192"
+        end
       end
 
       target.vm.box_download_insecure = box[:box]

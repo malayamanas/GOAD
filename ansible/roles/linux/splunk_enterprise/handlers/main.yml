@@ -1,0 +1,7 @@
+---
+# Handlers for Splunk Enterprise
+
+- name: restart splunk
+  shell: |
+    su {{ splunk_user }} -s /bin/bash -c "{{ splunk_home }}/bin/splunk restart"
+  become: yes

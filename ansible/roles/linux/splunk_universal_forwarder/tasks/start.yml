@@ -1,0 +1,22 @@
+---
+# Start Splunk Universal Forwarder
+
+- name: Start Splunk Universal Forwarder service via systemd
+  systemd:
+    name: SplunkForwarder
+    state: started
+    enabled: yes
+  become: yes
+  register: splunk_uf_start_result
+
+- name: Wait for Splunk Universal Forwarder to be ready
+  wait_for:
+    port: 8089
+    host: 127.0.0.1
+    delay: 5
+    timeout: 60
+    state: started
+
+- name: Display Splunk Universal Forwarder status
+  debug:
+    msg: "Splunk Universal Forwarder is running on {{ ansible_hostname }} and forwarding to {{ splunk_hf_ip }}:9997"

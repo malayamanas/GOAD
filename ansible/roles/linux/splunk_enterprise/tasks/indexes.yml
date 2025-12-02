@@ -1,0 +1,11 @@
+---
+# Create Splunk indexes
+
+- name: Create indexes.conf for custom indexes
+  template:
+    src: indexes.conf.j2
+    dest: "{{ splunk_home }}/etc/system/local/indexes.conf"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    mode: '0644'
+  notify: restart splunk

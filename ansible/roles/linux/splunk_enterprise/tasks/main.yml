@@ -1,0 +1,19 @@
+---
+# Splunk Enterprise Installation and Configuration
+# This role installs Splunk Enterprise (Indexer + Search Head combined)
+
+- name: Include tasks for installing Splunk Enterprise
+  include_tasks: install.yml
+  tags: install
+
+- name: Include tasks for configuring Splunk Enterprise
+  include_tasks: configure.yml
+  tags: configure
+
+- name: Include tasks for creating indexes
+  include_tasks: indexes.yml
+  tags: indexes
+
+- name: Include tasks for starting Splunk
+  include_tasks: start.yml
+  tags: start

@@ -1,0 +1,43 @@
+---
+# Install Splunk Universal Forwarder (Linux)
+
+- name: Create Splunk user
+  user:
+    name: "{{ splunk_user }}"
+    comment: "Splunk Service Account"
+    shell: /bin/bash
+    system: yes
+    createhome: yes
+
+- name: Check if Splunk Universal Forwarder is already installed
+  stat:
+    path: "{{ splunk_forwarder_home }}/bin/splunk"
+  register: splunk_uf_installed
+
+- name: Download Splunk Universal Forwarder package
+  get_url:
+    url: "https://download.splunk.com/products/universalforwarder/releases/{{ splunk_version }}/linux/{{ splunk_forwarder_filename }}"
+    dest: "/tmp/{{ splunk_forwarder_filename }}"
+    mode: '0644'
+    timeout: 300
+  when: not splunk_uf_installed.stat.exists
+  retries: 3
+  delay: 10
+
+- name: Install Splunk Universal Forwarder from DEB package
+  apt:
+    deb: "/tmp/{{ splunk_forwarder_filename }}"
+    state: present
+  when: not splunk_uf_installed.stat.exists
+
+- name: Set ownership of Splunk Forwarder directory
+  file:
+    path: "{{ splunk_forwarder_home }}"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    recurse: yes
+
+- name: Clean up downloaded package
+  file:
+    path: "/tmp/{{ splunk_forwarder_filename }}"
+    state: absent

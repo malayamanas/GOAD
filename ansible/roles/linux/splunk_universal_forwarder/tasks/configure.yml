@@ -1,0 +1,38 @@
+---
+# Configure Splunk Universal Forwarder (Linux)
+
+- name: Accept Splunk license (first time setup)
+  shell: |
+    su {{ splunk_user }} -s /bin/bash -c "{{ splunk_forwarder_home }}/bin/splunk start --accept-license --answer-yes --no-prompt --seed-passwd {{ splunk_admin_password }}"
+  args:
+    creates: "{{ splunk_forwarder_home }}/etc/system/local/user-seed.conf"
+  become: yes
+  register: splunk_uf_first_start
+
+- name: Stop Splunk for configuration
+  shell: |
+    su {{ splunk_user }} -s /bin/bash -c "{{ splunk_forwarder_home }}/bin/splunk stop"
+  become: yes
+  when: splunk_uf_first_start.changed
+
+- name: Configure Splunk outputs (forward to Heavy Forwarder)
+  template:
+    src: outputs.conf.j2
+    dest: "{{ splunk_forwarder_home }}/etc/system/local/outputs.conf"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    mode: '0644'
+
+- name: Configure Splunk inputs (log file monitoring)
+  template:
+    src: inputs.conf.j2
+    dest: "{{ splunk_forwarder_home }}/etc/system/local/inputs.conf"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    mode: '0644'
+
+- name: Enable Splunk to start at boot
+  command: "{{ splunk_forwarder_home }}/bin/splunk enable boot-start -user {{ splunk_user }} --accept-license --answer-yes --no-prompt"
+  args:
+    creates: /etc/init.d/splunk
+  when: splunk_enable_boot_start | bool

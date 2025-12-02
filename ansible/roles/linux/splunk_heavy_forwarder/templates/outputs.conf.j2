@@ -1,0 +1,12 @@
+# Splunk Heavy Forwarder Outputs Configuration
+# Forwards data to Splunk Indexer
+
+[tcpout]
+defaultGroup = indexer_group
+
+[tcpout:indexer_group]
+server = {{ splunk_indexer_ip }}:{{ splunk_indexer_port }}
+compressed = true
+
+[indexAndForward]
+index = false

@@ -1,0 +1,21 @@
+---
+# Start Splunk Heavy Forwarder
+
+- name: Start Splunk service
+  shell: |
+    su {{ splunk_user }} -s /bin/bash -c "{{ splunk_home }}/bin/splunk start --accept-license --answer-yes --no-prompt"
+  become: yes
+  register: splunk_hf_start_result
+  changed_when: "'Splunk> All systems go' in splunk_hf_start_result.stdout"
+
+- name: Wait for Splunk web interface to be available
+  wait_for:
+    host: "{{ splunk_hf_ip }}"
+    port: "{{ splunk_hf_web_port }}"
+    delay: 10
+    timeout: 300
+    state: started
+
+- name: Display Splunk Heavy Forwarder web URL
+  debug:
+    msg: "Splunk Heavy Forwarder Web is available at http://{{ splunk_hf_ip }}:{{ splunk_hf_web_port }} (admin/{{ splunk_admin_password }})"

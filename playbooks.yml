@@ -59,6 +59,7 @@ GOAD-Mini:
 OCSF-SPLUNK:
   - build.yml
   - security.yml
+  - splunk.yml
 
 default:
   - build.yml

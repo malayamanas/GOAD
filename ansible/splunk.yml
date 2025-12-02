@@ -1,0 +1,75 @@
+---
+# Splunk Deployment Playbook for OCSF-SPLUNK Lab
+# This playbook installs and configures all Splunk components
+
+# Load lab data
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# Install Splunk Enterprise (Indexer + Search Head) on SPLUNK-IDX
+- name: Install Splunk Enterprise (Indexer + Search Head)
+  hosts: splunk_server
+  become: yes
+  vars_files:
+    - "../splunk.yml"
+  roles:
+    - { role: 'linux/splunk_enterprise', tags: 'splunk_enterprise' }
+
+# Install Splunk Heavy Forwarder on SPLUNK-HF
+- name: Install Splunk Heavy Forwarder
+  hosts: splunk_forwarder
+  become: yes
+  vars_files:
+    - "../splunk.yml"
+  roles:
+    - { role: 'linux/splunk_heavy_forwarder', tags: 'splunk_heavy_forwarder' }
+
+# Install Splunk Universal Forwarder on Linux workstations (WS-LINUX only, NOT KALI)
+- name: Install Splunk Universal Forwarder (Linux)
+  hosts: linux_workstation
+  become: yes
+  vars_files:
+    - "../splunk.yml"
+  roles:
+    - { role: 'linux/splunk_universal_forwarder', tags: 'splunk_universal_forwarder_linux' }
+
+# Install Splunk Universal Forwarder on Windows workstation (WS-WIN)
+- name: Install Splunk Universal Forwarder (Windows)
+  hosts: windows_workstation
+  vars_files:
+    - "../splunk.yml"
+  roles:
+    - { role: 'windows/splunk_universal_forwarder', tags: 'splunk_universal_forwarder_windows' }
+
+# Final summary
+- name: Splunk Deployment Summary
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Display deployment summary
+      debug:
+        msg:
+          - "=========================================="
+          - "Splunk Deployment Complete!"
+          - "=========================================="
+          - ""
+          - "Splunk Indexer/Search Head:"
+          - "  URL: http://{{ hostvars[groups['splunk_server'][0]]['ansible_host'] }}:8000"
+          - "  Username: admin"
+          - "  Password: changeme"
+          - ""
+          - "Splunk Heavy Forwarder:"
+          - "  URL: http://{{ hostvars[groups['splunk_forwarder'][0]]['ansible_host'] }}:8000"
+          - "  Username: admin"
+          - "  Password: changeme"
+          - ""
+          - "Data Flow:"
+          - "  WS-WIN → Heavy Forwarder → Indexer"
+          - "  WS-LINUX → Heavy Forwarder → Indexer"
+          - ""
+          - "Note: KALI does not have Splunk UF installed (by design)"
+          - ""
+          - "=========================================="

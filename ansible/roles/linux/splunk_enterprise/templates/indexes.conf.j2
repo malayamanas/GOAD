@@ -1,0 +1,14 @@
+# Splunk Indexes Configuration
+
+[default]
+maxDataSize = auto_high_volume
+
+{% for index in splunk_indexes %}
+[{{ index.name }}]
+homePath = {{ index.homePath }}
+coldPath = {{ index.coldPath }}
+thawedPath = {{ index.thawedPath }}
+maxDataSize = auto_high_volume
+frozenTimePeriodInSecs = 2592000
+
+{% endfor %}

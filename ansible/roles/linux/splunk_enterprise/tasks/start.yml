@@ -1,0 +1,21 @@
+---
+# Start Splunk Enterprise
+
+- name: Start Splunk service
+  shell: |
+    su {{ splunk_user }} -s /bin/bash -c "{{ splunk_home }}/bin/splunk start --accept-license --answer-yes --no-prompt"
+  become: yes
+  register: splunk_start_result
+  changed_when: "'Splunk> All systems go' in splunk_start_result.stdout"
+
+- name: Wait for Splunk web interface to be available
+  wait_for:
+    host: "{{ splunk_indexer_ip }}"
+    port: "{{ splunk_web_port }}"
+    delay: 10
+    timeout: 300
+    state: started
+
+- name: Display Splunk web URL
+  debug:
+    msg: "Splunk Web is available at http://{{ splunk_indexer_ip }}:{{ splunk_web_port }} (admin/{{ splunk_admin_password }})"

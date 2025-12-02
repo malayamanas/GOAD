@@ -1,0 +1,13 @@
+# Splunk Universal Forwarder Inputs Configuration (Linux)
+# Monitor log files and forward to Heavy Forwarder
+
+[default]
+host = {{ ansible_hostname }}
+
+{% for input in splunk_linux_inputs %}
+[monitor://{{ input.source }}]
+disabled = false
+index = {{ input.index }}
+sourcetype = {{ input.sourcetype }}
+
+{% endfor %}

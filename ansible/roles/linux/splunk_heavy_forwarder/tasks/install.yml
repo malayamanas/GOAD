@@ -1,0 +1,64 @@
+---
+# Install Splunk Heavy Forwarder (Full Splunk Enterprise)
+
+- name: Create Splunk user
+  user:
+    name: "{{ splunk_user }}"
+    comment: "Splunk Service Account"
+    shell: /bin/bash
+    system: yes
+    createhome: yes
+
+- name: Check if Splunk Heavy Forwarder is already installed
+  stat:
+    path: "{{ splunk_home }}/bin/splunk"
+  register: splunk_hf_installed
+
+- name: Download Splunk Enterprise package using wget (for Heavy Forwarder)
+  shell: |
+    wget -O /tmp/{{ splunk_enterprise_filename }} \
+      'https://download.splunk.com/products/splunk/releases/{{ splunk_version }}/linux/{{ splunk_enterprise_filename }}' \
+      --no-check-certificate --timeout=300 --tries=3
+  args:
+    creates: "/tmp/{{ splunk_enterprise_filename }}"
+  when: not splunk_hf_installed.stat.exists
+  register: download_result
+  ignore_errors: yes
+
+- name: Check if download was successful
+  stat:
+    path: "/tmp/{{ splunk_enterprise_filename }}"
+  register: package_check
+  when: not splunk_hf_installed.stat.exists
+
+- name: Display download instructions if automatic download failed
+  fail:
+    msg: |
+      Splunk download failed. Please download manually:
+
+      1. Visit https://www.splunk.com/en_us/download/splunk-enterprise.html
+      2. Download version {{ splunk_version }} for Linux (.deb package)
+      3. Upload to SPLUNK-HF:/tmp/{{ splunk_enterprise_filename }}
+
+      Or use: scp -P 2233 {{ splunk_enterprise_filename }} vagrant@localhost:/tmp/
+  when:
+    - not splunk_hf_installed.stat.exists
+    - not package_check.stat.exists or package_check.stat.size < 100000000
+
+- name: Install Splunk Enterprise from DEB package
+  apt:
+    deb: "/tmp/{{ splunk_enterprise_filename }}"
+    state: present
+  when: not splunk_hf_installed.stat.exists
+
+- name: Set ownership of Splunk directory
+  file:
+    path: "{{ splunk_home }}"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    recurse: yes
+
+- name: Clean up downloaded package
+  file:
+    path: "/tmp/{{ splunk_enterprise_filename }}"
+    state: absent

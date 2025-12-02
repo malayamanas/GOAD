@@ -1,0 +1,12 @@
+# Splunk Universal Forwarder Inputs Configuration (Windows)
+# Monitor Windows Event Logs and forward to Heavy Forwarder
+
+[default]
+host = {{ ansible_hostname }}
+
+{% for input in splunk_windows_inputs %}
+[WinEventLog://{{ input.name }}]
+disabled = false
+index = {{ input.index }}
+renderXml = true
+{% endfor %}

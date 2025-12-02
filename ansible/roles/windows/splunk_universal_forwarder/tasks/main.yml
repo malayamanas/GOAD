@@ -1,0 +1,14 @@
+---
+# Splunk Universal Forwarder Installation and Configuration (Windows)
+
+- name: Include tasks for installing Splunk Universal Forwarder
+  include_tasks: install.yml
+  tags: install
+
+- name: Include tasks for configuring Splunk Universal Forwarder
+  include_tasks: configure.yml
+  tags: configure
+
+- name: Include tasks for starting Splunk Universal Forwarder
+  include_tasks: start.yml
+  tags: start

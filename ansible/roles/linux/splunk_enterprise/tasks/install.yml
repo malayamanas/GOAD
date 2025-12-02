@@ -1,0 +1,43 @@
+---
+# Install Splunk Enterprise
+
+- name: Create Splunk user
+  user:
+    name: "{{ splunk_user }}"
+    comment: "Splunk Service Account"
+    shell: /bin/bash
+    system: yes
+    createhome: yes
+
+- name: Check if Splunk is already installed
+  stat:
+    path: "{{ splunk_home }}/bin/splunk"
+  register: splunk_installed
+
+- name: Download Splunk Enterprise package
+  get_url:
+    url: "https://download.splunk.com/products/splunk/releases/{{ splunk_version }}/linux/{{ splunk_enterprise_filename }}"
+    dest: "/tmp/{{ splunk_enterprise_filename }}"
+    mode: '0644'
+    timeout: 300
+  when: not splunk_installed.stat.exists
+  retries: 3
+  delay: 10
+
+- name: Install Splunk Enterprise from DEB package
+  apt:
+    deb: "/tmp/{{ splunk_enterprise_filename }}"
+    state: present
+  when: not splunk_installed.stat.exists
+
+- name: Set ownership of Splunk directory
+  file:
+    path: "{{ splunk_home }}"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_group }}"
+    recurse: yes
+
+- name: Clean up downloaded package
+  file:
+    path: "/tmp/{{ splunk_enterprise_filename }}"
+    state: absent

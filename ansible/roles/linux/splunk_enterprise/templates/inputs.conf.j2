@@ -1,0 +1,9 @@
+# Splunk Inputs Configuration (Indexer)
+# This configures the indexer to receive data from forwarders
+
+[splunktcp://{{ splunk_indexer_port }}]
+disabled = false
+connection_host = ip
+
+[default]
+host = {{ ansible_hostname }}

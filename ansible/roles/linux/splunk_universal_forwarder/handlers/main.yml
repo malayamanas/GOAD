@@ -1,0 +1,8 @@
+---
+# Handlers for Splunk Universal Forwarder (Linux)
+
+- name: restart splunk
+  systemd:
+    name: SplunkForwarder
+    state: restarted
+  become: yes

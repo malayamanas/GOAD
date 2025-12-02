@@ -1,0 +1,9 @@
+# Splunk Heavy Forwarder Inputs Configuration
+# Receives data from Universal Forwarders
+
+[splunktcp://9997]
+disabled = false
+connection_host = ip
+
+[default]
+host = {{ ansible_hostname }}

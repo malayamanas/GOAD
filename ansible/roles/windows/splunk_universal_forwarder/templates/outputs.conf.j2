@@ -1,0 +1,9 @@
+# Splunk Universal Forwarder Outputs Configuration (Windows)
+# Forwards data to Splunk Heavy Forwarder
+
+[tcpout]
+defaultGroup = heavy_forwarder_group
+
+[tcpout:heavy_forwarder_group]
+server = {{ splunk_hf_ip }}:9997
+compressed = true
