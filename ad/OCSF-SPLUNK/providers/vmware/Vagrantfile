@@ -1,6 +1,6 @@
 boxes = [
-  { :name => "SPLUNK-IDX",  :ip => "{{ip_range}}.32", :box => "bento/ubuntu-22.04", :os => "linux", :cpus => 2, :mem => 4096, :forwarded_port => [ {:guest => 22, :host => 2232, :id => "ssh"} ]},
-  { :name => "SPLUNK-HF",   :ip => "{{ip_range}}.33", :box => "bento/ubuntu-22.04", :os => "linux", :cpus => 1, :mem => 2048, :forwarded_port => [ {:guest => 22, :host => 2233, :id => "ssh"} ]},
+  { :name => "SPLUNK-IDX",  :ip => "{{ip_range}}.32", :box => "bento/ubuntu-22.04", :os => "linux", :cpus => 4, :mem => 8192, :forwarded_port => [ {:guest => 22, :host => 2232, :id => "ssh"} ]},
+  { :name => "SPLUNK-HF",   :ip => "{{ip_range}}.33", :box => "bento/ubuntu-22.04", :os => "linux", :cpus => 4, :mem => 8192, :forwarded_port => [ {:guest => 22, :host => 2233, :id => "ssh"} ]},
   { :name => "WS-WIN",      :ip => "{{ip_range}}.34", :box => "gusztavvargadr/windows-11", :os => "windows", :cpus => 2, :mem => 4096},
   { :name => "WS-LINUX",    :ip => "{{ip_range}}.35", :box => "bento/ubuntu-22.04", :os => "linux", :cpus => 1, :mem => 1024, :forwarded_port => [ {:guest => 22, :host => 2235, :id => "ssh"} ]},
   { :name => "KALI",        :ip => "{{ip_range}}.36", :box => "kalilinux/rolling", :os => "linux", :cpus => 2, :mem => 2048, :forwarded_port => [ {:guest => 22, :host => 2236, :id => "ssh"} ]}
